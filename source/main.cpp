@@ -112,6 +112,7 @@ void extract_file(char *file, char *dir) {
 }
 
 int main(int argc, char *argv[]) {
+	bool use_ur0 = false;
 	SceIoStat st1, st2;
 	scePowerSetArmClockFrequency(444);
 	scePowerSetBusClockFrequency(222);
@@ -146,8 +147,10 @@ int main(int argc, char *argv[]) {
 	char user_plugin_str[96];
 	strcpy(user_plugin_str, "*SHARKF00D\nux0:data/vitadb.suprx\n*NPXS10031\nux0:data/vitadb.suprx\n");
 	FILE *fp = fopen("ux0:tai/config.txt", "r");
-	if (!fp)
+	if (!fp) {
 		fp = fopen("ur0:tai/config.txt", "r");
+		use_ur0 = true;
+	}
 	int cfg_size = fread(generic_mem_buffer, 1, MEM_BUFFER_SIZE, fp);
 	fclose(fp);
 	if (!strncmp(generic_mem_buffer, user_plugin_str, strlen(user_plugin_str))) {
@@ -180,9 +183,7 @@ int main(int argc, char *argv[]) {
 			sceAppMgrLaunchAppByName(0x60000, "SHARKF00D", "");
 			sceKernelExitProcess(0);
 		} else { // Step 3: Cleanup
-			fp = fopen("ux0:tai/config.txt", "w");
-			if (!fp)
-				fp = fopen("ur0:tai/config.txt", "w");
+			fp = fopen(use_ur0 ? "ur0:tai/config.txt" : "ux0:tai/config.txt", "w");
 			fwrite(&generic_mem_buffer[strlen(user_plugin_str)], 1, cfg_size - strlen(user_plugin_str), fp);
 			fclose(fp);
 			sceIoRemove("ux0:data/vitadb.skprx");
@@ -199,14 +200,7 @@ int main(int argc, char *argv[]) {
 			sceKernelExitProcess(0);
 		}
 	} else { // Step 1: Download PSM Runtime and install it
-		fp = fopen("ux0:tai/config.txt", "r");
-		if (!fp)
-			fp = fopen("ur0:tai/config.txt", "r");
-		int cfg_size = fread(generic_mem_buffer, 1, MEM_BUFFER_SIZE, fp);
-		fclose(fp);
-		fp = fopen("ux0:tai/config.txt", "w");
-		if (!fp)
-			fp = fopen("ur0:tai/config.txt", "w");
+		fp = fopen(use_ur0 ? "ur0:tai/config.txt" : "ux0:tai/config.txt", "w");
 		fwrite(user_plugin_str, 1, strlen(user_plugin_str), fp);
 		fwrite(generic_mem_buffer, 1, cfg_size, fp);
 		fclose(fp);
