@@ -20,7 +20,7 @@
 #define _NETWORK_H
 
 #define MEM_BUFFER_SIZE (32 * 1024 * 1024)
-#define TEMP_DOWNLOAD_NAME "ux0:data/VitaDB/temp.tmp"
+#define TEMP_DOWNLOAD_NAME "ux0:data/temp.tmp"
 
 extern uint8_t *generic_mem_buffer;
 extern volatile uint64_t total_bytes;
