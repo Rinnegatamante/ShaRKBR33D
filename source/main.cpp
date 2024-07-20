@@ -157,7 +157,7 @@ int main(int argc, char *argv[]) {
 		if (!(sceIoGetstat("ur0:/data/libshacccg.suprx", &st1) >= 0 || sceIoGetstat("ur0:/data/external/libshacccg.suprx", &st2) >= 0)) { // Step 2: Extract libshacccg.suprx
 			sceIoRemove("ux0:/data/Runtime1.00.pkg");
 			sceIoRemove("ux0:/data/Runtime2.01.pkg");
-			download_file("https://vitadb.rinnegatamante.it/get_hb_url.php?id=567", "Downloading SharkF00D");
+			download_file("https://www.rinnegatamante.eu/vitadb/get_hb_url.php?id=567", "Downloading SharkF00D");
 			sceIoMkdir("ux0:data/sharkbr33d", 0777);
 			extract_file(TEMP_DOWNLOAD_NAME, "ux0:data/sharkbr33d/");
 			sceIoRemove(TEMP_DOWNLOAD_NAME);
