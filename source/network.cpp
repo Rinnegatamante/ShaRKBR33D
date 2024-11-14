@@ -52,7 +52,9 @@ static size_t write_cb(void *ptr, size_t size, size_t nmemb, void *stream) {
 
 static size_t header_cb(char *buffer, size_t size, size_t nitems, void *userdata) {
 	char *ptr = strcasestr(buffer, "Content-Length");
-	if (ptr != NULL) sscanf(ptr, "Content-Length: %llu", &total_bytes);
+	if (ptr != NULL) {
+		sscanf(ptr, "Content-Length: %llu\n", &total_bytes);
+	}
 	return nitems;
 }
 
@@ -73,7 +75,7 @@ static void startDownload(const char *url) {
 	curl_easy_setopt(curl_handle, CURLOPT_NOPROGRESS, 1L);
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_cb);
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, bytes_string); // Dummy
-	curl_easy_setopt(curl_handle, CURLOPT_HEADERFUNCTION, downloaded_bytes ? header_dummy_cb : header_cb);
+	curl_easy_setopt(curl_handle, CURLOPT_HEADERFUNCTION, header_cb);
 	curl_easy_setopt(curl_handle, CURLOPT_HEADERDATA, bytes_string); // Dummy
 	curl_easy_setopt(curl_handle, CURLOPT_RESUME_FROM, downloaded_bytes);
 	curl_easy_setopt(curl_handle, CURLOPT_BUFFERSIZE, 524288);
@@ -125,12 +127,12 @@ void download_file(char *url, char *text) {
 	info.size = sizeof(SceKernelThreadInfo);
 	int res = 0;
 	SceUID thd = sceKernelCreateThread("Generic Downloader", &downloadThread, 0x10000100, 0x100000, 0, 0, NULL);
-	sprintf(generic_url, url);
+	strcpy((char *)generic_url, url);
 	sceKernelStartThread(thd, 0, NULL);
 	init_progressbar_dialog(text);
 	do {
 		sceKernelPowerTick(SCE_KERNEL_POWER_TICK_DEFAULT);
-		sceMsgDialogProgressBarSetValue(SCE_MSG_DIALOG_PROGRESSBAR_TARGET_BAR_DEFAULT, (downloaded_bytes / total_bytes) * 100);
+		sceMsgDialogProgressBarSetValue(SCE_MSG_DIALOG_PROGRESSBAR_TARGET_BAR_DEFAULT, (((float)downloaded_bytes / (float)total_bytes) * 100.0f));
 		vglSwapBuffers(GL_TRUE);
 		res = sceKernelGetThreadInfo(thd, &info);
 	} while (info.status <= SCE_THREAD_DORMANT && res >= 0);
@@ -141,4 +143,5 @@ void download_file(char *url, char *text) {
 		status = sceMsgDialogGetStatus();
 	} while (status != SCE_COMMON_DIALOG_STATUS_FINISHED);
 	sceMsgDialogTerm();
+	downloaded_bytes = 0;
 }
