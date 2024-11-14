@@ -204,9 +204,9 @@ int main(int argc, char *argv[]) {
 		fwrite(user_plugin_str, 1, strlen(user_plugin_str), fp);
 		fwrite(generic_mem_buffer, 1, cfg_size, fp);
 		fclose(fp);
-		download_file("http://ares.dl.playstation.net/psm-runtime/IP9100-PCSI00011_00-PSMRUNTIME000000.pkg", "Downloading PSM Runtime v.1.00");
+		download_file("https://archive.org/download/psm-runtime/IP9100-PCSI00011_00-PSMRUNTIME000000.pkg", "Downloading PSM Runtime v.1.00");
 		sceIoRename(TEMP_DOWNLOAD_NAME, "ux0:/data/Runtime1.00.pkg");
-		download_file("http://gs.ww.np.dl.playstation.net/ppkg/np/PCSI00011/PCSI00011_T8/286a65ec1ebc2d8b/IP9100-PCSI00011_00-PSMRUNTIME000000-A0201-V0100-e4708b1c1c71116c29632c23df590f68edbfc341-PE.pkg", "Downloading PSM Runtime v.2.01");
+		download_file("https://archive.org/download/psm-runtime/IP9100-PCSI00011_00-PSMRUNTIME000000-A0201-V0100-e4708b1c1c71116c29632c23df590f68edbfc341-PE.pkg", "Downloading PSM Runtime v.2.01");
 		sceIoRename(TEMP_DOWNLOAD_NAME, "ux0:/data/Runtime2.01.pkg");
 		copy_file("app0:vitadb.skprx", "ux0:data/vitadb.skprx");
 		copy_file("app0:vitadb.suprx", "ux0:data/vitadb.suprx");
