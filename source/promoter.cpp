@@ -21,6 +21,7 @@
 #include <locale>
 #include <codecvt>
 #include <stdio.h>
+#include <string.h>
 #include <string>
 #include <vitasdk.h>
 #include "head.h"

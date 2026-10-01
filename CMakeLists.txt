@@ -10,6 +10,8 @@ endif()
 
 project(ShaRKBR33D C CXX)
 include("${VITASDK}/share/vita.cmake" REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(libcurl REQUIRED IMPORTED_TARGET libcurl)
 set(VITA_APP_NAME "ShaRKBR33D")
 set(VITA_TITLEID  "SHRKBR33D")
 set(VITA_VERSION  "01.00")
@@ -32,10 +34,16 @@ add_executable(ShaRKBR33D
   source/sha1.c
 )
 
-add_dependencies(ShaRKBR33D ShaRKBR33D.skprx ShaRKBR33D.suprx)
+if(CMAKE_VERSION VERSION_LESS "3.20.0")
+  add_dependencies(ShaRKBR33D vitadb.skprx vitadb.suprx)
+else()
+  add_dependencies(ShaRKBR33D vitadb.skprx-self vitadb.suprx-self)
+endif()
 
 target_link_libraries(ShaRKBR33D
-  -Wl,--whole-archive pthread -Wl,--no-whole-archive
+  -Wl,--whole-archive SceSysmodule_stub -Wl,--no-whole-archive
+  PkgConfig::libcurl
+  -pthread
   m
   z
   stdc++
@@ -60,7 +68,6 @@ target_link_libraries(ShaRKBR33D
   SceNet_stub
   SceNetCtl_stub
   SceShaccCg_stub
-  -Wl,--whole-archive SceSysmodule_stub -Wl,--no-whole-archive
   ScePower_stub
   SceTouch_stub
   SceVshBridge_stub
